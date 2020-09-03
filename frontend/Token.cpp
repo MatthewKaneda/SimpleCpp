@@ -127,11 +127,6 @@ Token *Token::String(char firstChar, Source *source)
 				tokenError(token, "String not closed", source->lineNumber());
 				return token;
 			}
-//			if (isspace(ch)) {token->text += ' ';}
-//			else
-//			{
-//				token->text += ch;
-//			}
 			token->text += ch;
 		}
 		tester = apostropheCheck(token, source);
