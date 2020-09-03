@@ -116,29 +116,47 @@ Token *Token::String(char firstChar, Source *source)
 
 	// Loop to append the rest of the characters of the string,
 	// up to but not including the closing quote.
-    int counter = 0;
-	for (char ch = source->nextChar(); ch != '\''; ch = source->nextChar())
-	{
-		if (isalpha(ch) || isdigit(ch)) counter++;
-		if (isspace(ch)) {token->text += ' ';}
-		else
+    bool tester = true;
+    while(tester)
+    {
+		for (char ch = source->nextChar(); ch != '\''; ch = source->nextChar())
 		{
+			if(ch == EOF)
+			{
+				token->type = TokenType::ERROR;
+				tokenError(token, "String not closed", source->lineNumber());
+				return token;
+			}
+//			if (isspace(ch)) {token->text += ' ';}
+//			else
+//			{
+//				token->text += ch;
+//			}
 			token->text += ch;
 		}
-	}
-
+		tester = apostropheCheck(token, source);
+    }
 	token->text += '\'';  // the closing quote
 	source->nextChar();  // consume the closing quote
 
-	if (counter == 1) token->type = TokenType::CHARACTER;
+	if (token->text.length() == 3) token->type = TokenType::CHARACTER;
 	else token->type = TokenType::STRING;
 
-//	char nextChat = source->nextChar();
 
 	// Don't include the leading and trailing '.
 	token->value.S = token->text.substr(1, token->text.length() - 2);
 
 	return token;
+}
+
+bool Token::apostropheCheck(Token *token, Source *source)
+{
+	if(char ch = source->nextChar() == '\'')
+	{
+		token->text += '\'';
+		return true;
+	}
+	else return false;
 }
 
 Token *Token::SpecialSymbol(char firstChar, Source *source)

@@ -160,6 +160,8 @@ public:
     static Token *SpecialSymbol(char firstChar, Source *source);
 
     static void tokenError(Token *token, string message, int linNum);
+
+    static bool apostropheCheck(Token *token, Source *source);
 };
 
 }  // namespace frontend
